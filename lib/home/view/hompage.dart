@@ -1,95 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_task/college_list/view/college_list.dart';
+import 'package:flutter_task/home/controller/homecontroller.dart';
+import 'package:get/get.dart';
+
+import '../../widgets/shared/bottom_navbar.dart';
+import '../components/picture_container.dart';
 
 class Homepage extends StatelessWidget {
   const Homepage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Get.put(HomeController());
     final Color primaryColor = Theme.of(context).colorScheme.primary;
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.symmetric(horizontal: width * 0.07),
-        color: primaryColor,
-        height: 65,
-        width: width,
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.home,
-                    color: Colors.white,
-                    size: 31,
-                  ),
-                  const Text(
-                    'Search',
-                    style: TextStyle(fontSize: 10, color: Colors.white),
-                  ),
-                  SizedBox(height: height * 0.005),
-                  const SizedBox(
-                    width: 50,
-                    child: Divider(
-                      color: Colors.white,
-                      height: 5,
-                      thickness: 3,
-                    ),
-                  )
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.bookmark,
-                    color: Color(0xffBBBBBB),
-                    size: 31,
-                  ),
-                  Text(
-                    'saved',
-                    style: TextStyle(fontSize: 10, color: Color(0xffBBBBBB)),
-                  ),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.savings_outlined,
-                    color: Color(0xffBBBBBB),
-                    size: 31,
-                  ),
-                  Text(
-                    'saved',
-                    style: TextStyle(fontSize: 10, color: Color(0xffBBBBBB)),
-                  ),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
-                  Icon(
-                    CupertinoIcons.person_fill,
-                    color: Color(0xffBBBBBB),
-                    size: 31,
-                  ),
-                  Text(
-                    'account',
-                    style: TextStyle(fontSize: 10, color: Color(0xffBBBBBB)),
-                  ),
-                ],
-              ),
-            ]),
-      ),
+      bottomNavigationBar: BottomNavBar(
+          width: width, primaryColor: primaryColor, height: height),
       body: Column(
         children: [
           Container(
@@ -99,7 +28,7 @@ class Homepage extends StatelessWidget {
                 top: height * 0.05,
                 bottom: height * 0.03),
             height: height * 0.28,
-            width: double.infinity,
+            width: width,
             decoration: BoxDecoration(
                 color: primaryColor,
                 borderRadius: const BorderRadius.only(
@@ -108,11 +37,22 @@ class Homepage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Align(
+                Align(
                   alignment: Alignment.centerRight,
-                  child: Icon(
-                    Icons.notifications,
-                    color: Colors.white,
+                  child: Stack(
+                    children: const [
+                      Icon(
+                        Icons.notifications,
+                        color: Colors.white,
+                      ),
+                      Positioned(
+                          right: 1,
+                          top: 2,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.red,
+                            radius: 4,
+                          )),
+                    ],
                   ),
                 ),
                 const Text(
@@ -180,7 +120,7 @@ class Homepage extends StatelessWidget {
             ),
           ),
           SizedBox(height: height * 0.025),
-          Container(
+          SizedBox(
             height: (height * 0.58),
             width: width,
             child: Column(
@@ -195,6 +135,90 @@ class Homepage extends StatelessWidget {
                       'Search through thousands of accredited colleges and universities online to find the right one for you.  Apply in 3 min, and connect with your future.',
                   rich1: '+126',
                   rich2: ' Colleges',
+                  onTap: () {
+                    showModalBottomSheet(
+                      backgroundColor: Colors.white,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30),
+                              topRight: Radius.circular(30))),
+                      context: context,
+                      builder: (BuildContext context) {
+                        return GetBuilder<HomeController>(
+                            builder: (controller) {
+                          return Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: width * 0.07,
+                                vertical: height * 0.02),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      'Sort By',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.cancel),
+                                      onPressed: () {
+                                        Get.back();
+                                      },
+                                    )
+                                  ],
+                                ),
+                                SizedBox(
+                                  width: width,
+                                  child: Divider(
+                                    color: Colors.black.withOpacity(0.2),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: height * 0.4,
+                                  child: ListView.builder(
+                                      padding: EdgeInsets.zero,
+                                      itemCount: 6,
+                                      itemBuilder: (context, index) {
+                                        final sort = controller.sortList[index];
+                                        return SizedBox(
+                                          height: height * 0.06,
+                                          child: ListTile(
+                                            minVerticalPadding: 0,
+                                            contentPadding: EdgeInsets.zero,
+                                            title: Text(
+                                              sort['name'],
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 16),
+                                            ),
+                                            trailing: Obx(() => (Radio(
+                                                fillColor:
+                                                    MaterialStateProperty.all(
+                                                        primaryColor),
+                                                value: index,
+                                                groupValue:
+                                                    controller.groupValue.value,
+                                                onChanged: (value) {
+                                                  controller.groupValue.value =
+                                                      value as int;
+                                                  Get.to(() =>
+                                                      const CollegeList());
+                                                }))),
+                                            leading: Icon(sort['icon']),
+                                          ),
+                                        );
+                                      }),
+                                )
+                              ],
+                            ),
+                          );
+                        });
+                      },
+                    );
+                  },
                 ),
                 PictureContainer(
                   width: width,
@@ -205,6 +229,9 @@ class Homepage extends StatelessWidget {
                       'Searching for the best school for you just got easier! With our Advanced School Search, you can easily filter out the schools that are fit for you.',
                   rich1: '+106',
                   rich2: ' Schools',
+                  onTap: () {
+                    Get.to(() => const CollegeList());
+                  },
                 ),
                 PictureContainer(
                   width: width,
@@ -215,96 +242,13 @@ class Homepage extends StatelessWidget {
                       'Find an end to end information about the exams that are happening in India',
                   rich1: '+16',
                   rich2: ' Exams',
+                  onTap: () {
+                    Get.to(() => const CollegeList());
+                  },
                 )
               ],
             ),
           )
-        ],
-      ),
-    );
-  }
-}
-
-class PictureContainer extends StatelessWidget {
-  const PictureContainer({
-    Key? key,
-    required this.width,
-    required this.height,
-    required this.image,
-    required this.title,
-    required this.subtitle,
-    required this.rich1,
-    required this.rich2,
-  }) : super(key: key);
-
-  final double width;
-  final double height;
-  final String image;
-  final String title;
-  final String subtitle;
-  final String rich1;
-  final String rich2;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width * 0.86,
-      height: height * 0.18,
-      child: Stack(
-        children: [
-          Container(
-            width: width * 0.86,
-            height: height * 0.2,
-            child: Image.asset(
-              image,
-              fit: BoxFit.fill,
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: width * 0.05, vertical: height * 0.02),
-            width: width * 0.6,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  subtitle,
-                  textAlign: TextAlign.justify,
-                  style: const TextStyle(
-                      fontSize: 11,
-                      height: 1.4,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white),
-                )
-              ],
-            ),
-          ),
-          Positioned(
-              right: width * -0.0002,
-              bottom: 10,
-              child: Text.rich(TextSpan(children: [
-                TextSpan(
-                    text: rich1,
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800)),
-                TextSpan(
-                    text: rich2,
-                    style: const TextStyle(
-                        color: Color(0xff848484),
-                        fontSize: 9,
-                        fontWeight: FontWeight.w600))
-              ])))
         ],
       ),
     );
